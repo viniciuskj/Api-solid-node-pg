@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { RegisterUseCase } from '@/use-cases/register'
-import { PrismaUserRepository } from '@/repositories/prisma/prismaUserRepository'
 import { UserAlreadyExistsError } from '@/use-cases/errors/userAlreadyExists'
+import { makeRegisterUseCase } from '@/use-cases/factories/makeRegisterUseCase'
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
@@ -14,9 +13,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const { name, email, password } = registerBodySchema.parse(request.body)
 
   try {
-    // SOLID - D - Inversão de depedencia, não dependemos do prisma, caso querira trocar, ou sej não depende de repositório
-    const prismaUsersRepository = new PrismaUserRepository()
-    const registerUseCase = new RegisterUseCase(prismaUsersRepository)
+    const registerUseCase = makeRegisterUseCase()
 
     await registerUseCase.execute({
       name,

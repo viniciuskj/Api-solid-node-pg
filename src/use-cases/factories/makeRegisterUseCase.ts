@@ -1,4 +1,4 @@
-import { RegisterUseCase } from '../register'
+import { RegisterUseCase } from '../register/registerUseCase'
 import { PrismaUserRepository } from '@/repositories/prisma/prismaUserRepository'
 
 export function makeRegisterUseCase() {

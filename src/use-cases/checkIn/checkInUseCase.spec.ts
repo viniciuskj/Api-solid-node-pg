@@ -3,24 +3,26 @@ import { InMemoryCheckInRepository } from '@/repositories/inMemory/inMemoryCheck
 import { CheckInUseCase } from './checkInUseCase'
 import { InMemoryGymRepository } from '@/repositories/inMemory/inMemoryGymsRepository'
 import { Decimal } from 'generated/prisma/runtime/library'
+import { MaxDistanceError } from '../errors/maxDistanceError'
+import { MaxNUmberOfCheckInsError } from '../errors/maxNumbersOfCheckInsError'
 
 let checkInRepository: InMemoryCheckInRepository
 let gymRepository: InMemoryGymRepository
 let sut: CheckInUseCase
 
 describe('CheckIn Use Case', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInRepository = new InMemoryCheckInRepository()
     gymRepository = new InMemoryGymRepository()
     sut = new CheckInUseCase(checkInRepository, gymRepository)
 
-    gymRepository.items.push({
+    await gymRepository.create({
       id: 'gym-id-check-in',
       title: 'Academia Campinas',
       description: '',
       phone: '',
-      latitude: new Decimal(0),
-      longitude: new Decimal(0),
+      latitude: -22.8347947,
+      longitude: -47.0524421,
     })
 
     vi.useFakeTimers() // Usa com datas falsas
@@ -58,7 +60,7 @@ describe('CheckIn Use Case', () => {
         userLatitude: -22.8347947,
         userLongitude: -47.0524421,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxNUmberOfCheckInsError)
   })
 
   it('should be able to check in twice in the different days', async () => {
@@ -84,6 +86,9 @@ describe('CheckIn Use Case', () => {
   })
 
   it('should not be able to check in on distant gym', async () => {
+    // Limpa o array de academias antes de adicionar a nova
+    gymRepository.items = []
+
     gymRepository.items.push({
       id: 'gym-id-check-in',
       title: 'Academia Campinas',
@@ -93,13 +98,13 @@ describe('CheckIn Use Case', () => {
       longitude: new Decimal(-47.0492433),
     })
 
-    expect(() =>
+    await expect(() =>
       sut.execute({
         userId: 'user-id-check-in',
         gymId: 'gym-id-check-in',
         userLatitude: -22.8347947,
         userLongitude: -47.0524421,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxDistanceError)
   })
 })

@@ -4,12 +4,12 @@ import { compare } from 'bcryptjs'
 import { User } from 'generated/prisma/client'
 
 // Todo processo que esta dentro da palicação sempre vai ter as tipagens de entrada e saida, ou seja oque espero receber e devolver -interfaces
-interface AuthenticateUseCaseRequest {
+interface AuthenticateSchemaUseCaseRequest {
   email: string
   password: string
 }
 
-interface AuthenticateUseCaseResponse {
+interface AuthenticateSchemaUseCaseResponse {
   user: User
 }
 
@@ -19,7 +19,7 @@ export class AuthenticateUseCase {
   async execute({
     email,
     password,
-  }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
+  }: AuthenticateSchemaUseCaseRequest): Promise<AuthenticateSchemaUseCaseResponse> {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {

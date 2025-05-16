@@ -3,11 +3,11 @@ import { User } from 'generated/prisma/client'
 import { ResourceNotFoundError } from '../errors/resourceNotFoundError'
 
 // Todo processo que esta dentro da palicação sempre vai ter as tipagens de entrada e saida, ou seja oque espero receber e devolver -interfaces
-interface GetUserProfileUseCaseRequest {
+interface GetUserProfileSchemaUseCaseRequest {
   userId: string
 }
 
-interface GetUserProfileUseCaseResponse {
+interface GetUserProfileSchemaUseCaseResponse {
   user: User
 }
 
@@ -16,7 +16,7 @@ export class GetUserProfileUseCase {
 
   async execute({
     userId,
-  }: GetUserProfileUseCaseRequest): Promise<GetUserProfileUseCaseResponse> {
+  }: GetUserProfileSchemaUseCaseRequest): Promise<GetUserProfileSchemaUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {

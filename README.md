@@ -13,8 +13,7 @@ Gympass style app.
 - Buscar academias pelo nome
 - Realizar check-in em uma academia 
 - Validar check-in de um usuário 
-- Cadastrar uma academia 
-- 
+- Cadastrar uma academia
 
 # Regras de Negócio 
 

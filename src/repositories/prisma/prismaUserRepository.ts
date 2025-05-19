@@ -1,10 +1,16 @@
 import { prisma } from '@/lib/prisma'
-import { Prisma, User } from 'generated/prisma/client'
+import { Prisma } from 'generated/prisma/client'
 import { UsersRepository } from '../usersRepository'
-
+// Conexão com as camdas externas
 export class PrismaUserRepository implements UsersRepository {
-  findById(id: string): Promise<User | null> {
-    throw new Error('Method not implemented.')
+  async findById(id: string) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    return user
   }
 
   async findByEmail(email: string) {
